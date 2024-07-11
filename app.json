@@ -1,10 +1,11 @@
 {
   "expo": {
-    "name": "MyContacts",
-    "slug": "MyContacts",
+    "name": "Eazy Contacts",
+    "slug": "Eazy-Contacts",
+    "description": "A handy app that allows you to easily save contacts and locate them on the map",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/new-icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -13,13 +14,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.scar06.iEazyContacts"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.scar06.EazyContacts"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +34,20 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "e0239627-de52-465e-bed4-1001ed428270"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/e0239627-de52-465e-bed4-1001ed428270"
     }
   }
 }

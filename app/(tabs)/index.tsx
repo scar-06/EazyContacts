@@ -1,70 +1,83 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+// app/screens/DashboardScreen.tsx
+import React, { useEffect } from "react";
+import { View, Text, FlatList, StyleSheet } from "react-native";
+import MapView, { Marker } from "react-native-maps";
+import { useContactStore } from "../store/useStore";
+import { StatusBar } from "expo-status-bar";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+const DashboardScreen = () => {
+  const contacts = useContactStore((state) => state.contacts);
 
-export default function HomeScreen() {
+  useEffect(() => {
+    // Randomly select an address for each contact
+    contacts.forEach((contact) => {
+      contact.randomAddress =
+        contact.addresses[Math.floor(Math.random() * contact.addresses.length)];
+    });
+  }, [contacts]);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <View style={styles.container}>
+      <View style={styles.tableContainer}>
+        <Text>Table View</Text>
+        <FlatList
+          data={contacts}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.tableRow}>
+              <Text style={styles.tableCell}>{item.name}</Text>
+              <Text style={styles.tableCell}>{item.phoneNumber}</Text>
+              <Text style={styles.tableCell}>{item.email}</Text>
+              <Text style={styles.tableCell}>{item.randomAddress}</Text>
+              <Text style={styles.tableCell}>{item.longitude}</Text>
+              <Text style={styles.tableCell}>{item.latitude}</Text>
+            </View>
+          )}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      </View>
+
+      <Text>Map View </Text>
+      <MapView style={styles.map}>
+        {contacts.map((contact) => (
+          <Marker
+            key={contact.id}
+            coordinate={{
+              latitude: contact.latitude,
+              longitude: contact.longitude,
+            }}
+            title={contact.name}
+            description={contact.randomAddress}
+          />
+        ))}
+      </MapView>
+      <StatusBar style="auto" />
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    padding: 10,
+    marginTop: 30,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  tableContainer: {
+    flex: 1,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  tableRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+  tableCell: {
+    flex: 1,
+    textAlign: "center",
+  },
+  map: {
+    flex: 2,
   },
 });
+
+export default DashboardScreen;
